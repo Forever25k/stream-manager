@@ -675,7 +675,206 @@
   .empty-state .empty-icon { font-size: 48px; margin-bottom: 1rem; opacity: 0.4; }
   .empty-state p { font-size: 15px; }
 
-  /* ─── MODAL ─── */
+  /* ─── MENÚ LATERAL (SIDEBAR) ─── */
+  .sidebar-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .sidebar-overlay.open { opacity: 1; pointer-events: all; }
+
+  .sidebar {
+    position: fixed; top: 0; left: 0;
+    width: 290px; height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border2);
+    z-index: 300;
+    display: flex; flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    box-shadow: 8px 0 40px rgba(0,0,0,0.5);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .sidebar-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; }
+  .sidebar-logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 14px rgba(108,99,255,0.35);
+  }
+  .sidebar-brand-text { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+  .sidebar-brand-sub  { font-size: 11px; color: var(--text3); }
+  .sidebar-close {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text2); font-size: 15px;
+    transition: all 0.2s;
+  }
+  .sidebar-close:hover { border-color: var(--red); color: var(--red); }
+
+  /* Usuario en sidebar */
+  .sidebar-user {
+    margin: 14px 16px;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .sidebar-user-name { font-size: 13px; font-weight: 600; }
+  .sidebar-user-email { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+
+  /* Grupos de menú */
+  .sidebar-nav { flex: 1; overflow-y: auto; padding: 8px 10px; }
+  .sidebar-group { margin-bottom: 6px; }
+  .sidebar-group-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text3); padding: 8px 10px 4px;
+  }
+
+  .sidebar-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    text-decoration: none; color: var(--text2);
+    font-size: 14px; font-weight: 500;
+    margin-bottom: 2px;
+    background: none;
+    width: 100%; text-align: left;
+    font-family: var(--font);
+  }
+  .sidebar-item:hover {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--border);
+  }
+  .sidebar-item.active {
+    background: var(--accent-glow);
+    color: var(--accent2);
+    border-color: var(--border2);
+  }
+  .sidebar-item.danger:hover {
+    background: var(--red-bg);
+    color: var(--red);
+    border-color: rgba(255,77,109,0.25);
+  }
+  .sidebar-item-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+    background: var(--surface2);
+    transition: background 0.15s;
+  }
+  .sidebar-item:hover .sidebar-item-icon { background: var(--surface3); }
+  .sidebar-item.active .sidebar-item-icon { background: var(--accent-glow); }
+  .sidebar-item.danger:hover .sidebar-item-icon { background: var(--red-bg); }
+
+  .sidebar-item-text { flex: 1; }
+  .sidebar-item-badge {
+    font-size: 10px; font-weight: 700;
+    background: var(--red); color: #fff;
+    border-radius: 20px; padding: 2px 7px;
+  }
+  .sidebar-item-badge.green { background: var(--green); color: #000; }
+  .sidebar-item-badge.yellow { background: var(--yellow); color: #000; }
+
+  .sidebar-divider {
+    height: 1px; background: var(--border);
+    margin: 6px 10px;
+  }
+
+  /* WA soporte y footer */
+  .sidebar-footer {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .btn-wa-soporte {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 16px;
+    background: rgba(37,211,102,0.1);
+    border: 1px solid rgba(37,211,102,0.3);
+    border-radius: 12px;
+    color: #25d366; font-family: var(--font);
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-wa-soporte:hover {
+    background: rgba(37,211,102,0.2);
+    border-color: rgba(37,211,102,0.5);
+    transform: translateY(-1px);
+  }
+  .btn-wa-soporte svg { width:18px; height:18px; fill: #25d366; flex-shrink:0; }
+  .sidebar-version { font-size: 10px; color: var(--text3); text-align: center; }
+
+  /* Botón hamburguesa en topbar */
+  .topbar-menu-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text2); font-size: 16px;
+    transition: all 0.2s; flex-direction: column; gap: 4px;
+  }
+  .topbar-menu-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ham-line {
+    width: 16px; height: 2px; background: currentColor;
+    border-radius: 2px; transition: all 0.2s;
+    display: block;
+  }
+
+  /* ─── MODAL CAMBIO DE CONTRASEÑA ─── */
+  .pwd-field { margin-bottom: 14px; }
+  .pwd-field label {
+    display: block; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.7px; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 6px;
+  }
+  .pwd-field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px;
+    font-family: var(--font); font-size: 14px; color: var(--text);
+    outline: none; transition: border-color 0.2s;
+  }
+  .pwd-field input:focus { border-color: var(--accent); }
+  .pwd-field input::placeholder { color: var(--text3); }
+  .pwd-strength {
+    height: 3px; border-radius: 3px; margin-top: 6px;
+    background: var(--surface3); overflow: hidden;
+  }
+  .pwd-strength-bar {
+    height: 100%; border-radius: 3px;
+    transition: width 0.3s, background 0.3s;
+    width: 0%;
+  }
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.75);
@@ -907,6 +1106,11 @@
   <!-- CABECERA -->
   <div class="topbar">
     <div class="topbar-left">
+      <button class="topbar-menu-btn" onclick="toggleSidebar()" title="Menú">
+        <span class="ham-line"></span>
+        <span class="ham-line"></span>
+        <span class="ham-line"></span>
+      </button>
       <div class="topbar-logo">📡</div>
       <div class="topbar-brand">
         <h2>StreamManager</h2>
@@ -1107,6 +1311,144 @@
 </div>
 
 <div class="toast-container" id="toasts"></div>
+
+<!-- ═══ SIDEBAR MENÚ ═══ -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">📡</div>
+      <div>
+        <div class="sidebar-brand-text">StreamManager</div>
+        <div class="sidebar-brand-sub">Panel de control</div>
+      </div>
+    </div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+
+  <!-- Usuario activo -->
+  <div class="sidebar-user">
+    <div class="sidebar-avatar" id="sb-avatar">—</div>
+    <div style="overflow:hidden">
+      <div class="sidebar-user-name" id="sb-name">—</div>
+      <div class="sidebar-user-email" id="sb-email">—</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <!-- PRINCIPAL -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Principal</div>
+      <button class="sidebar-item active" onclick="closeSidebar()">
+        <span class="sidebar-item-icon">🏠</span>
+        <span class="sidebar-item-text">Dashboard</span>
+      </button>
+      <button class="sidebar-item" onclick="closeSidebar(); openAddModal()">
+        <span class="sidebar-item-icon">➕</span>
+        <span class="sidebar-item-text">Nuevo cliente</span>
+      </button>
+      <button class="sidebar-item" onclick="closeSidebar(); setFilter('all')">
+        <span class="sidebar-item-icon">👥</span>
+        <span class="sidebar-item-text">Todos los clientes</span>
+        <span class="sidebar-item-badge green" id="sb-badge-total">0</span>
+      </button>
+    </div>
+
+    <!-- FILTROS RÁPIDOS -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Filtros rápidos</div>
+      <button class="sidebar-item" onclick="closeSidebar(); setFilter('active')">
+        <span class="sidebar-item-icon">✅</span>
+        <span class="sidebar-item-text">Activos</span>
+        <span class="sidebar-item-badge green" id="sb-badge-active">0</span>
+      </button>
+      <button class="sidebar-item" onclick="closeSidebar(); setFilter('warning')">
+        <span class="sidebar-item-icon">⏳</span>
+        <span class="sidebar-item-text">Por vencer (7d)</span>
+        <span class="sidebar-item-badge yellow" id="sb-badge-warning">0</span>
+      </button>
+      <button class="sidebar-item" onclick="closeSidebar(); setFilter('expired')">
+        <span class="sidebar-item-icon">🔴</span>
+        <span class="sidebar-item-text">Vencidos</span>
+        <span class="sidebar-item-badge" id="sb-badge-expired">0</span>
+      </button>
+    </div>
+
+    <!-- HERRAMIENTAS -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Herramientas</div>
+      <button class="sidebar-item" onclick="closeSidebar(); exportCSV()">
+        <span class="sidebar-item-icon">📥</span>
+        <span class="sidebar-item-text">Exportar CSV</span>
+      </button>
+      <button class="sidebar-item" onclick="closeSidebar(); openChangePassword()">
+        <span class="sidebar-item-icon">🔑</span>
+        <span class="sidebar-item-text">Cambiar contraseña</span>
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- SESIÓN -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Sesión</div>
+      <button class="sidebar-item" onclick="closeSidebar()">
+        <span class="sidebar-item-icon">⏱</span>
+        <span class="sidebar-item-text">Tiempo restante</span>
+        <span style="font-family:var(--mono);font-size:12px;color:var(--text3)" id="sb-timer">—</span>
+      </button>
+      <button class="sidebar-item danger" onclick="closeSidebar(); doLogout()">
+        <span class="sidebar-item-icon">⎋</span>
+        <span class="sidebar-item-text">Cerrar sesión</span>
+      </button>
+    </div>
+
+  </nav>
+
+  <!-- FOOTER: WhatsApp Soporte + versión -->
+  <div class="sidebar-footer">
+    <a class="btn-wa-soporte"
+       href="https://wa.me/573045441405?text=Hola%2C%20necesito%20ayuda%20con%20StreamManager"
+       target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Contactar soporte
+    </a>
+    <div class="sidebar-version">StreamManager v1.0 · Keiran Dev</div>
+  </div>
+</div>
+
+<!-- ═══ MODAL CAMBIAR CONTRASEÑA ═══ -->
+<div class="modal-overlay" id="pwd-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <span class="modal-title">🔑 Cambiar contraseña</span>
+      <button class="modal-close" onclick="closeModal('pwd-modal')">✕</button>
+    </div>
+    <div id="pwd-modal-success" class="auth-success" style="margin-bottom:14px"></div>
+    <div class="pwd-field">
+      <label>Contraseña actual</label>
+      <input type="password" id="pwd-current" placeholder="••••••••">
+    </div>
+    <div class="pwd-field">
+      <label>Nueva contraseña</label>
+      <input type="password" id="pwd-new" placeholder="Mínimo 6 caracteres" oninput="checkPwdStrength(this.value)">
+      <div class="pwd-strength"><div class="pwd-strength-bar" id="pwd-strength-bar"></div></div>
+    </div>
+    <div class="pwd-field">
+      <label>Confirmar nueva contraseña</label>
+      <input type="password" id="pwd-confirm" placeholder="Repite la contraseña">
+    </div>
+    <div id="pwd-error" class="auth-error"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('pwd-modal')">Cancelar</button>
+      <button class="btn-save" onclick="doChangePassword()">Actualizar contraseña</button>
+    </div>
+  </div>
+</div>
 
 <!-- FIREBASE SDK -->
 <script type="module">
@@ -1494,6 +1836,129 @@
     if (remaining <= 30000) el.classList.add('danger');
     else if (remaining <= 60000) el.classList.add('warn');
   }
+
+  /* ─── SIDEBAR ─── */
+  window.toggleSidebar = () => {
+    const sb = $('sidebar');
+    sb.classList.contains('open') ? closeSidebar() : openSidebar();
+  };
+  window.openSidebar = () => {
+    $('sidebar').classList.add('open');
+    $('sidebar-overlay').classList.add('open');
+    syncSidebarBadges();
+    syncSidebarUser();
+  };
+  window.closeSidebar = () => {
+    $('sidebar').classList.remove('open');
+    $('sidebar-overlay').classList.remove('open');
+  };
+
+  function syncSidebarBadges() {
+    let active=0, warning=0, expired=0;
+    clients.forEach(c => {
+      const s = getStatus(getDaysLeft(c.endDate));
+      if (s==='active') active++;
+      else if (s==='warning') warning++;
+      else expired++;
+    });
+    const sb = id => { const el=$(id); if(el) el.textContent = arguments[1]; };
+    const set = (id,v) => { const el=$(id); if(el) el.textContent=v; };
+    set('sb-badge-total',   clients.length);
+    set('sb-badge-active',  active);
+    set('sb-badge-warning', warning);
+    set('sb-badge-expired', expired);
+    // sync timer label
+    const timerEl = $('sb-timer');
+    if (timerEl) {
+      const txt = $('session-timer-text');
+      timerEl.textContent = txt ? txt.textContent : '—';
+    }
+  }
+
+  function syncSidebarUser() {
+    if (!currentUser) return;
+    const name  = currentUser.displayName || currentUser.email?.split('@')[0] || '?';
+    const email = currentUser.email || '';
+    const av    = $('sb-avatar');
+    const nm    = $('sb-name');
+    const em    = $('sb-email');
+    if (av) av.textContent = name.charAt(0).toUpperCase();
+    if (nm) nm.textContent = name;
+    if (em) em.textContent = email;
+  }
+
+  /* ─── CAMBIAR CONTRASEÑA ─── */
+  window.openChangePassword = () => {
+    $('pwd-current').value = '';
+    $('pwd-new').value = '';
+    $('pwd-confirm').value = '';
+    $('pwd-error').classList.remove('show');
+    $('pwd-modal-success').classList.remove('show');
+    $('pwd-strength-bar').style.width = '0%';
+    $('pwd-modal').classList.add('open');
+  };
+
+  window.checkPwdStrength = (val) => {
+    const bar = $('pwd-strength-bar');
+    if (!bar) return;
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const pct   = [0, 20, 40, 65, 85, 100][score];
+    const color = ['','#ff4d6d','#ffb82b','#ffb82b','#00e699','#00e699'][score];
+    bar.style.width = pct + '%';
+    bar.style.background = color;
+  };
+
+  window.doChangePassword = async () => {
+    const current = $('pwd-current').value;
+    const newPwd  = $('pwd-new').value;
+    const confirm = $('pwd-confirm').value;
+    const errEl   = $('pwd-error');
+    const sucEl   = $('pwd-modal-success');
+    errEl.classList.remove('show');
+    sucEl.classList.remove('show');
+
+    if (!current || !newPwd || !confirm) {
+      errEl.textContent = 'Completa todos los campos.'; errEl.classList.add('show'); return;
+    }
+    if (newPwd.length < 6) {
+      errEl.textContent = 'La nueva contraseña debe tener al menos 6 caracteres.'; errEl.classList.add('show'); return;
+    }
+    if (newPwd !== confirm) {
+      errEl.textContent = 'Las contraseñas nuevas no coinciden.'; errEl.classList.add('show'); return;
+    }
+    try {
+      showLoading(true);
+      const { reauthenticateWithCredential, EmailAuthProvider, updatePassword }
+        = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+      const credential = EmailAuthProvider.credential(currentUser.email, current);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPwd);
+      showLoading(false);
+      sucEl.textContent = '✓ Contraseña actualizada correctamente.';
+      sucEl.classList.add('show');
+      $('pwd-current').value = '';
+      $('pwd-new').value = '';
+      $('pwd-confirm').value = '';
+      $('pwd-strength-bar').style.width = '0%';
+      showToast('✓ Contraseña cambiada exitosamente.', 'success');
+      setTimeout(() => closeModal('pwd-modal'), 2000);
+    } catch(e) {
+      showLoading(false);
+      const msgs = {
+        'auth/wrong-password':       'La contraseña actual es incorrecta.',
+        'auth/invalid-credential':   'La contraseña actual es incorrecta.',
+        'auth/too-many-requests':    'Demasiados intentos. Intenta más tarde.',
+        'auth/requires-recent-login':'Vuelve a iniciar sesión e intenta de nuevo.',
+      };
+      errEl.textContent = msgs[e.code] || 'Error: ' + e.message;
+      errEl.classList.add('show');
+    }
+  };
 
   window.doForgotPassword = async () => {
     const email = $('forgot-email').value.trim();
