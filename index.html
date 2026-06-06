@@ -402,6 +402,52 @@
   .stat-value.blue   { color: var(--blue); }
   .stat-footer { font-size: 11px; color: var(--text3); margin-top: 8px; }
 
+  /* BARRA DE PROGRESO en stat cards */
+  .stat-progress {
+    margin-top: 10px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--surface3);
+    overflow: hidden;
+  }
+  .stat-progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+  }
+  .stat-card.c-green  .stat-progress-bar { background: var(--green); }
+  .stat-card.c-yellow .stat-progress-bar { background: var(--yellow); }
+  .stat-card.c-red    .stat-progress-bar { background: var(--red); }
+  .stat-card.c-blue   .stat-progress-bar { background: var(--blue); }
+
+  /* TEMPORIZADOR DE SESIÓN en topbar */
+  .session-timer {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    transition: all 0.3s;
+  }
+  .session-timer.warn {
+    color: var(--yellow);
+    border-color: rgba(255,184,43,0.4);
+    background: rgba(255,184,43,0.06);
+  }
+  .session-timer.danger {
+    color: var(--red);
+    border-color: rgba(255,77,109,0.4);
+    background: rgba(255,77,109,0.06);
+    animation: pulse-timer 1s ease infinite;
+  }
+  @keyframes pulse-timer {
+    0%,100% { opacity:1; } 50% { opacity:0.6; }
+  }
+  .timer-icon { font-size: 11px; }
+
   /* TOOLBAR DE BÚSQUEDA Y FILTROS */
   .toolbar {
     display: flex;
@@ -448,6 +494,21 @@
     transition: opacity 0.2s;
   }
   .btn-add:hover { opacity: 0.9; }
+
+  .btn-export {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 16px;
+    color: var(--text2); font-family: var(--font);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .btn-export:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-bg);
+  }
 
   /* ─── TABLA Y TARJETAS DE CLIENTES ─── */
   .table-wrap {
@@ -853,6 +914,10 @@
       </div>
     </div>
     <div class="topbar-right">
+      <div class="session-timer" id="session-timer" title="Tiempo restante de sesión" style="display:none">
+        <span class="timer-icon">⏱</span>
+        <span id="session-timer-text">3:00</span>
+      </div>
       <span class="user-badge" id="user-email-badge">
         <span class="user-dot"></span>—
       </span>
@@ -879,6 +944,7 @@
         </div>
         <div class="stat-value blue" id="stat-total">0</div>
         <div class="stat-footer">clientes registrados</div>
+        <div class="stat-progress"><div class="stat-progress-bar" id="prog-total" style="width:100%"></div></div>
       </div>
       <div class="stat-card c-green">
         <div class="stat-card-top">
@@ -887,6 +953,7 @@
         </div>
         <div class="stat-value green" id="stat-active">0</div>
         <div class="stat-footer">con suscripción vigente</div>
+        <div class="stat-progress"><div class="stat-progress-bar" id="prog-active" style="width:0%"></div></div>
       </div>
       <div class="stat-card c-yellow">
         <div class="stat-card-top">
@@ -895,6 +962,7 @@
         </div>
         <div class="stat-value yellow" id="stat-warning">0</div>
         <div class="stat-footer">requieren renovación pronto</div>
+        <div class="stat-progress"><div class="stat-progress-bar" id="prog-warning" style="width:0%"></div></div>
       </div>
       <div class="stat-card c-red">
         <div class="stat-card-top">
@@ -903,6 +971,7 @@
         </div>
         <div class="stat-value red" id="stat-expired">0</div>
         <div class="stat-footer">sin servicio activo</div>
+        <div class="stat-progress"><div class="stat-progress-bar" id="prog-expired" style="width:0%"></div></div>
       </div>
       <div class="stat-card c-accent">
         <div class="stat-card-top">
@@ -924,6 +993,7 @@
       <button class="filter-btn" id="btn-filter-active" onclick="setFilter('active')">Activos</button>
       <button class="filter-btn" id="btn-filter-warning" onclick="setFilter('warning')">Por vencer</button>
       <button class="filter-btn" id="btn-filter-expired" onclick="setFilter('expired')">Vencidos</button>
+      <button class="btn-export" onclick="exportCSV()">📥 Exportar CSV</button>
       <button class="btn-add" onclick="openAddModal()">＋ Nuevo cliente</button>
     </div>
 
@@ -1369,6 +1439,62 @@
     }
   };
 
+  /* ─── EXPORTAR CSV ─── */
+  window.exportCSV = () => {
+    if (!clients.length) { showToast('No hay clientes para exportar.', 'info'); return; }
+    const headers = ['Nombre','WhatsApp','Plataforma','Plan','Precio','Fecha Inicio','Fecha Vencimiento','Estado','Notas'];
+    const rows = clients.map(c => {
+      const days = getDaysLeft(c.endDate);
+      const status = getStatus(days);
+      const statusLabel = status==='active' ? 'Activo' : status==='warning' ? 'Por vencer' : 'Vencido';
+      return [
+        c.name||'', c.phone||'', c.platform||'', c.plan||'',
+        c.price||'', c.startDate||'', c.endDate||'', statusLabel, (c.notes||'').replace(/,/g,' ')
+      ].map(v => `"${v}"`).join(',');
+    });
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `clientes_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`✓ ${clients.length} clientes exportados correctamente.`, 'success');
+  };
+
+  /* ─── TEMPORIZADOR VISUAL DE SESIÓN ─── */
+  let sessionCountdownInterval = null;
+  let sessionStartedAt = null;
+
+  function startSessionCountdown() {
+    sessionStartedAt = Date.now();
+    clearInterval(sessionCountdownInterval);
+    updateSessionTimer();
+    sessionCountdownInterval = setInterval(updateSessionTimer, 1000);
+  }
+
+  function stopSessionCountdown() {
+    clearInterval(sessionCountdownInterval);
+    const el = $('session-timer');
+    if (el) { el.className = 'session-timer'; el.style.display = 'none'; }
+  }
+
+  function updateSessionTimer() {
+    const el = $('session-timer');
+    const txt = $('session-timer-text');
+    if (!el || !txt) return;
+    el.style.display = 'flex';
+    const elapsed = Date.now() - sessionStartedAt;
+    const remaining = Math.max(0, INACTIVITY_LIMIT - elapsed);
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    txt.textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+    el.className = 'session-timer';
+    if (remaining <= 30000) el.classList.add('danger');
+    else if (remaining <= 60000) el.classList.add('warn');
+  }
+
   window.doForgotPassword = async () => {
     const email = $('forgot-email').value.trim();
     if (!email) { showAuthError('Ingresa tu correo electrónico.'); return; }
@@ -1436,6 +1562,15 @@
     $('stat-warning').textContent = warning;
     $('stat-expired').textContent = expired;
     $('stat-revenue').textContent = '$' + revenue.toLocaleString('es-CO');
+
+    // Barras de progreso proporcionales al total
+    const total = clients.length || 1;
+    setTimeout(() => {
+      const pb = (id, val) => { const el = $(id); if(el) el.style.width = Math.round((val/total)*100)+'%'; };
+      pb('prog-active',  active);
+      pb('prog-warning', warning);
+      pb('prog-expired', expired);
+    }, 80); // pequeño delay para que la animación CSS sea visible
   }
 
   window.setFilter = (f) => {
@@ -1746,6 +1881,7 @@
     clearTimeout(inactivityTimer);
     clearTimeout(inactivityWarn);
     if (warnToastEl) { warnToastEl.remove(); warnToastEl = null; }
+    sessionStartedAt = Date.now(); // reinicia el countdown visual
 
     // Aviso 30 s antes
     inactivityWarn = setTimeout(() => {
@@ -1770,12 +1906,14 @@
     const events = ['mousemove','mousedown','keydown','touchstart','scroll','click'];
     events.forEach(ev => document.addEventListener(ev, resetInactivityTimer, { passive: true }));
     resetInactivityTimer();
+    startSessionCountdown();
   }
 
   function stopInactivityWatch() {
     clearTimeout(inactivityTimer);
     clearTimeout(inactivityWarn);
     if (warnToastEl) { warnToastEl.remove(); warnToastEl = null; }
+    stopSessionCountdown();
   }
 
   window.addEventListener('DOMContentLoaded', () => {
