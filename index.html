@@ -198,6 +198,32 @@
     box-shadow: 0 2px 8px rgba(108,99,255,0.3);
   }
 
+  /* Enlace de recuperar contraseña */
+  .forgot-link {
+    text-align: right;
+    margin-top: -6px;
+  }
+  .forgot-link button {
+    background: none; border: none;
+    color: var(--accent2); font-family: var(--font);
+    font-size: 12px; cursor: pointer;
+    padding: 0; transition: color 0.2s;
+  }
+  .forgot-link button:hover { color: var(--accent); text-decoration: underline; }
+
+  /* Mensaje de éxito en auth */
+  .auth-success {
+    background: rgba(0,230,153,0.08);
+    border: 1px solid rgba(0,230,153,0.25);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--green);
+    display: none;
+    line-height: 1.5;
+  }
+  .auth-success.show { display: block; }
+
   .auth-form { display: flex; flex-direction: column; gap: 14px; }
 
   .field label {
@@ -260,58 +286,121 @@
     justify-content: space-between;
     padding: 0 2rem;
     height: 65px;
-    background: rgba(15,15,24,0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10,10,20,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 100;
   }
   .topbar-left { display: flex; align-items: center; gap: 12px; }
   .topbar-logo {
-    width: 34px; height: 34px;
-    background: var(--accent);
-    border-radius: 8px;
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     font-size: 18px;
+    box-shadow: 0 0 14px rgba(108,99,255,0.35);
   }
-  .topbar h2 { font-size: 18px; font-weight: 600; }
+  .topbar-brand { display: flex; flex-direction: column; gap: 1px; }
+  .topbar h2 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .topbar-sub { font-size: 11px; color: var(--text3); font-weight: 400; }
 
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
   .user-badge {
     font-size: 12px; color: var(--text2);
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 6px 14px;
-    max-width: 150px;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .user-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse-dot 2s ease infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; } 50% { opacity: 0.5; }
   }
 
   .main-content { padding: 2rem; max-width: 1200px; margin: 0 auto; }
 
+  /* SECCIÓN TÍTULO */
+  .dash-header {
+    display: flex; align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .dash-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .dash-sub { font-size: 13px; color: var(--text3); margin-top: 4px; }
+  .dash-date { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+
   /* TARJETAS DE ESTADÍSTICAS */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
     margin-bottom: 2rem;
   }
   .stat-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.2rem 1.4rem;
+    border-radius: var(--radius-lg);
+    padding: 1.4rem 1.5rem;
     position: relative;
     overflow: hidden;
+    transition: border-color 0.2s, transform 0.15s;
+    cursor: default;
   }
-  .stat-label { font-size: 11px; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
-  .stat-value { font-size: 30px; font-weight: 700; font-family: var(--mono); }
-  .stat-value.green { color: var(--green); }
+  .stat-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-1px);
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+  }
+  .stat-card.c-blue::before  { background: linear-gradient(90deg, var(--blue), transparent); }
+  .stat-card.c-green::before { background: linear-gradient(90deg, var(--green), transparent); }
+  .stat-card.c-yellow::before{ background: linear-gradient(90deg, var(--yellow), transparent); }
+  .stat-card.c-red::before   { background: linear-gradient(90deg, var(--red), transparent); }
+  .stat-card.c-accent::before{ background: linear-gradient(90deg, var(--accent), transparent); }
+
+  .stat-card-top {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .stat-label { font-size: 11px; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; font-weight: 600; }
+  .stat-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+  }
+  .stat-icon.i-blue   { background: var(--blue-bg); }
+  .stat-icon.i-green  { background: var(--green-bg); }
+  .stat-icon.i-yellow { background: var(--yellow-bg); }
+  .stat-icon.i-red    { background: var(--red-bg); }
+  .stat-icon.i-accent { background: var(--accent-glow); }
+
+  .stat-value { font-size: 32px; font-weight: 700; font-family: var(--mono); line-height: 1; }
+  .stat-value.green  { color: var(--green); }
   .stat-value.yellow { color: var(--yellow); }
-  .stat-value.red { color: var(--red); }
-  .stat-value.blue { color: var(--blue); }
+  .stat-value.red    { color: var(--red); }
+  .stat-value.blue   { color: var(--blue); }
+  .stat-footer { font-size: 11px; color: var(--text3); margin-top: 8px; }
 
   /* TOOLBAR DE BÚSQUEDA Y FILTROS */
   .toolbar {
@@ -653,12 +742,14 @@
     .mobile-clients-list { display: flex; }
 
     .topbar { padding: 0 1rem; }
+    .topbar-sub { display: none; }
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
     .stats-grid .stat-card:last-child {
       grid-column: span 2;
     }
+    .dash-header { flex-direction: column; align-items: flex-start; gap: 6px; }
     .toast-container {
       bottom: 1rem; right: 1rem;
     }
@@ -709,6 +800,9 @@
         <label>Contraseña</label>
         <input type="password" id="login-pass" placeholder="••••••••">
       </div>
+      <div class="forgot-link">
+        <button onclick="switchTab('forgot')">¿Olvidaste tu contraseña?</button>
+      </div>
       <button class="btn-primary" onclick="doLogin()">Entrar al Sistema</button>
     </div>
 
@@ -728,6 +822,22 @@
       </div>
       <button class="btn-primary" onclick="doRegister()">Crear Cuenta</button>
     </div>
+
+    <!-- RECUPERAR CONTRASEÑA -->
+    <div id="form-forgot" class="auth-form" style="display:none">
+      <div style="margin-bottom: 4px;">
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">Ingresa tu correo registrado y te enviaremos un enlace para restablecer tu contraseña.</p>
+      </div>
+      <div id="auth-success" class="auth-success"></div>
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" id="forgot-email" placeholder="tu@correo.com">
+      </div>
+      <button class="btn-primary" onclick="doForgotPassword()">Enviar enlace de recuperación</button>
+      <div style="text-align:center;margin-top:-4px;">
+        <button style="background:none;border:none;color:var(--text3);font-family:var(--font);font-size:13px;cursor:pointer;" onclick="switchTab('login')">← Volver al inicio de sesión</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -737,36 +847,70 @@
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-logo">📡</div>
-      <h2>StreamManager</h2>
+      <div class="topbar-brand">
+        <h2>StreamManager</h2>
+        <span class="topbar-sub">Panel de control</span>
+      </div>
     </div>
     <div class="topbar-right">
-      <span class="user-badge" id="user-email-badge">—</span>
-      <button class="btn-icon" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:16px;" onclick="doLogout()" title="Cerrar sesión">⎋</button>
+      <span class="user-badge" id="user-email-badge">
+        <span class="user-dot"></span>—
+      </span>
+      <button class="btn-icon" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'" onclick="doLogout()" title="Cerrar sesión">⎋</button>
     </div>
   </div>
 
   <div class="main-content">
+    <!-- ENCABEZADO DASHBOARD -->
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Resumen General</div>
+        <div class="dash-sub">Vista en tiempo real de tus suscripciones activas</div>
+      </div>
+      <div class="dash-date" id="dash-date-label">—</div>
+    </div>
+
     <!-- INDICADORES -->
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Total clientes</div>
+      <div class="stat-card c-blue">
+        <div class="stat-card-top">
+          <span class="stat-label">Total clientes</span>
+          <div class="stat-icon i-blue">👥</div>
+        </div>
         <div class="stat-value blue" id="stat-total">0</div>
+        <div class="stat-footer">clientes registrados</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Activos</div>
+      <div class="stat-card c-green">
+        <div class="stat-card-top">
+          <span class="stat-label">Activos</span>
+          <div class="stat-icon i-green">✅</div>
+        </div>
         <div class="stat-value green" id="stat-active">0</div>
+        <div class="stat-footer">con suscripción vigente</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Por vencer (7d)</div>
+      <div class="stat-card c-yellow">
+        <div class="stat-card-top">
+          <span class="stat-label">Por vencer (7d)</span>
+          <div class="stat-icon i-yellow">⏳</div>
+        </div>
         <div class="stat-value yellow" id="stat-warning">0</div>
+        <div class="stat-footer">requieren renovación pronto</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Vencidos</div>
+      <div class="stat-card c-red">
+        <div class="stat-card-top">
+          <span class="stat-label">Vencidos</span>
+          <div class="stat-icon i-red">🔴</div>
+        </div>
         <div class="stat-value red" id="stat-expired">0</div>
+        <div class="stat-footer">sin servicio activo</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Ingresos / mes</div>
-        <div class="stat-value" style="font-size:22px;color:var(--accent2)" id="stat-revenue">$0</div>
+      <div class="stat-card c-accent">
+        <div class="stat-card-top">
+          <span class="stat-label">Ingresos / mes</span>
+          <div class="stat-icon i-accent">💰</div>
+        </div>
+        <div class="stat-value" style="font-size:24px;color:var(--accent2)" id="stat-revenue">$0</div>
+        <div class="stat-footer">total cobrado activos</div>
       </div>
     </div>
 
@@ -906,7 +1050,8 @@
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    updateProfile
+    updateProfile,
+    sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore,
@@ -998,9 +1143,10 @@
         if (resolved) {
           if (user) {
             currentUser = user;
-            $('user-email-badge').textContent = user.displayName || user.email;
+            $('user-email-badge').innerHTML = `<span class="user-dot"></span>${user.displayName || user.email}`;
             subscribeClients();
             showScreen('app');
+            updateDashDate();
           }
           return;
         }
@@ -1011,10 +1157,11 @@
 
         if (user) {
           currentUser = user;
-          $('user-email-badge').textContent = user.displayName || user.email;
+          $('user-email-badge').innerHTML = `<span class="user-dot"></span>${user.displayName || user.email}`;
           logDebug(`Usuario autenticado detectado: ${user.email}`);
           subscribeClients();
           showScreen('app');
+          updateDashDate();
         } else {
           currentUser = null;
           clients = [];
@@ -1043,7 +1190,7 @@
     clearTimeout(loadTimeout);
     isOfflineMode = true;
     currentUser = { uid: "offline_user", displayName: "Negocio Local (Demo)", email: "offline@app.local" };
-    $('user-email-badge').textContent = currentUser.displayName;
+    $('user-email-badge').innerHTML = `<span class="user-dot"></span>${currentUser.displayName}`;
 
     const cached = localStorage.getItem('stream_clients_offline');
     clients = cached ? JSON.parse(cached) : [
@@ -1075,6 +1222,7 @@
     renderStats();
     renderTable();
     showScreen('app');
+    updateDashDate();
     showLoading(false);
   };
 
@@ -1119,9 +1267,12 @@
   window.switchTab = (tab) => {
     $('tab-login').classList.toggle('active', tab === 'login');
     $('tab-register').classList.toggle('active', tab === 'register');
-    $('form-login').style.display = tab === 'login' ? 'flex' : 'none';
+    $('form-login').style.display    = tab === 'login'    ? 'flex' : 'none';
     $('form-register').style.display = tab === 'register' ? 'flex' : 'none';
+    $('form-forgot').style.display   = tab === 'forgot'   ? 'flex' : 'none';
     $('auth-error').classList.remove('show');
+    const suc = $('auth-success');
+    if (suc) suc.classList.remove('show');
   };
 
   function showAuthError(msg) {
@@ -1155,6 +1306,8 @@
     });
     const next = $(name + '-screen');
     next.classList.add('active', 'entering');
+    if (name === 'app') startInactivityWatch();
+    else stopInactivityWatch();
   }
 
   window.doLogin = async () => {
@@ -1165,10 +1318,11 @@
       showLoading(true);
       const result = await signInWithEmailAndPassword(auth, email, pass);
       currentUser = result.user;
-      $('user-email-badge').textContent = currentUser.displayName || currentUser.email;
+      $('user-email-badge').innerHTML = `<span class="user-dot"></span>${currentUser.displayName || currentUser.email}`;
       logDebug(`Login exitoso: ${currentUser.email}`);
       subscribeClients();
       showScreen('app');
+      updateDashDate();
       showLoading(false);
       showToast('Bienvenido ' + (currentUser.displayName || 'Usuario'), 'success');
     } catch(e) {
@@ -1197,10 +1351,11 @@
         name, email, createdAt: new Date().toISOString()
       });
       currentUser = cred.user;
-      $('user-email-badge').textContent = name;
+      $('user-email-badge').innerHTML = `<span class="user-dot"></span>${name}`;
       logDebug(`Registro exitoso: ${email}`);
       subscribeClients();
       showScreen('app');
+      updateDashDate();
       showLoading(false);
       showToast('Cuenta creada exitosamente. Bienvenido!', 'success');
     } catch(e) {
@@ -1213,6 +1368,36 @@
       showAuthError(msgs[e.code] || 'Error en registro: ' + e.message);
     }
   };
+
+  window.doForgotPassword = async () => {
+    const email = $('forgot-email').value.trim();
+    if (!email) { showAuthError('Ingresa tu correo electrónico.'); return; }
+    const suc = $('auth-success');
+    try {
+      showLoading(true);
+      await sendPasswordResetEmail(auth, email);
+      showLoading(false);
+      $('auth-error').classList.remove('show');
+      suc.textContent = `✓ Enlace enviado a ${email}. Revisa tu bandeja de entrada (y la carpeta de spam).`;
+      suc.classList.add('show');
+      $('forgot-email').value = '';
+    } catch(e) {
+      showLoading(false);
+      const msgs = {
+        'auth/user-not-found': 'No existe una cuenta con ese correo.',
+        'auth/invalid-email': 'Formato de correo inválido.',
+      };
+      showAuthError(msgs[e.code] || 'Error: ' + e.message);
+    }
+  };
+
+  // Actualizar etiqueta de fecha en el dashboard
+  function updateDashDate() {
+    const el = $('dash-date-label');
+    if (!el) return;
+    const now = new Date();
+    el.textContent = now.toLocaleDateString('es-CO', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
 
   window.doLogout = async () => {
     if (isOfflineMode) {
@@ -1548,6 +1733,50 @@
       if (e.target === overlay) overlay.classList.remove('open');
     });
   });
+
+  /* ─── CIERRE DE SESIÓN POR INACTIVIDAD (3 min) ─── */
+  const INACTIVITY_LIMIT = 3 * 60 * 1000; // 3 minutos
+  const WARN_BEFORE      = 30 * 1000;      // aviso 30 s antes
+  let inactivityTimer  = null;
+  let inactivityWarn   = null;
+  let warnToastEl      = null;
+
+  function resetInactivityTimer() {
+    if (!currentUser) return;
+    clearTimeout(inactivityTimer);
+    clearTimeout(inactivityWarn);
+    if (warnToastEl) { warnToastEl.remove(); warnToastEl = null; }
+
+    // Aviso 30 s antes
+    inactivityWarn = setTimeout(() => {
+      if (!currentUser) return;
+      const c = $('toasts');
+      warnToastEl = document.createElement('div');
+      warnToastEl.className = 'toast info';
+      warnToastEl.innerHTML = `<span class="toast-dot" style="background:var(--yellow)"></span>⚠️ Sesión cerrará en 30 segundos por inactividad`;
+      c.appendChild(warnToastEl);
+    }, INACTIVITY_LIMIT - WARN_BEFORE);
+
+    // Cierre automático
+    inactivityTimer = setTimeout(async () => {
+      if (!currentUser) return;
+      if (warnToastEl) { warnToastEl.remove(); warnToastEl = null; }
+      showToast('Sesión cerrada por inactividad.', 'info');
+      await doLogout();
+    }, INACTIVITY_LIMIT);
+  }
+
+  function startInactivityWatch() {
+    const events = ['mousemove','mousedown','keydown','touchstart','scroll','click'];
+    events.forEach(ev => document.addEventListener(ev, resetInactivityTimer, { passive: true }));
+    resetInactivityTimer();
+  }
+
+  function stopInactivityWatch() {
+    clearTimeout(inactivityTimer);
+    clearTimeout(inactivityWarn);
+    if (warnToastEl) { warnToastEl.remove(); warnToastEl = null; }
+  }
 
   window.addEventListener('DOMContentLoaded', () => {
     initFirebase();
